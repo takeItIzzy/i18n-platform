@@ -1,0 +1,21 @@
+{
+  "name": "i18n-platform",
+  "version": "0.0.1",
+  "description": "an i18n management solution",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/takeItIzzy/i18n-platform.git"
+  },
+  "author": "takeItIzzy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/takeItIzzy/i18n-platform/issues"
+  },
+  "homepage": "https://github.com/takeItIzzy/i18n-platform#readme",
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  }
+}
