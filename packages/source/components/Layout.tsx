@@ -28,7 +28,7 @@ const HeadBar = () => {
       <div className="flex-1" />
       <div>
         <Link href="/login">
-          <a className="button-padding border border-gray-500 rounded-[6px]">Sign In / Sign Up</a>
+          <a className="button-padding border border-gray-500 rounded-[6px]">Sign In & Sign Up</a>
         </Link>
       </div>
     </div>
