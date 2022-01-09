@@ -5,7 +5,7 @@ function HomePage() {
     <Layout>
       <Layout.FirstScreen>
         <Layout.HeadBar />
-        <div className="h-full flex justify-center items-center">slogan</div>
+        <h1>slogan</h1>
       </Layout.FirstScreen>
     </Layout>
   );

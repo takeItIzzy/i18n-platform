@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .button-padding {
+        @apply px-[10px] py-[6px];
+    }
+}
