@@ -1,15 +1,15 @@
-import APIReturnMessage from '../../services/APIReturnMessage';
+import APIReturnMessage from 'services/APIReturnMessage';
+import connectDB from 'libs/mongodb';
 
 const login = async (req, res) => {
   const { username, password } = req.body;
 
-  const Redis = require('ioredis');
-  let client = new Redis(process.env.REDIS_URL);
-
   try {
-    const reply = await client.get(username);
+    const { db } = await connectDB();
+    const reply = await db.collection('user-info').findOne({ username });
     if (reply) {
-      if (reply !== password) {
+      // todo encrypt password
+      if (reply.password !== password) {
         res.status(401).json(
           new APIReturnMessage({
             status: 'error',

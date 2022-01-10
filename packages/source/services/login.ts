@@ -1,12 +1,10 @@
-import md5 from 'md5';
-
 const fetchLogin = (data) =>
   fetch('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...data, password: md5(data.password) }),
+    body: JSON.stringify({ ...data }),
   })
     .then((res) => {
       return res.json();
