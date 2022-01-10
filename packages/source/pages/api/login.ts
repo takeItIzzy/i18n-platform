@@ -1,5 +1,11 @@
 import APIReturnMessage from 'services/APIReturnMessage';
 import connectDB from 'libs/mongodb';
+import bcrypt from 'bcryptjs';
+
+const genEncryptPassword = (password: string) => {
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
+};
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -7,9 +13,8 @@ const login = async (req, res) => {
   try {
     const { db } = await connectDB();
     const reply = await db.collection('user-info').findOne({ username });
-    if (reply) {
-      // todo encrypt password
-      if (reply.password !== password) {
+    if (!!reply) {
+      if (bcrypt.compareSync(password, reply.password)) {
         res.status(401).json(
           new APIReturnMessage({
             status: 'error',
