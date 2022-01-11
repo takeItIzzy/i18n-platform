@@ -1,45 +1,31 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, MongoClientOptions } from 'mongodb';
 
-const { MONGO_URI, MONGO_DB } = process.env;
+const { MONGO_URI } = process.env;
 
 // check the MongoDB URI
 if (!MONGO_URI) {
-  throw new Error('Define the MONGODB_URI environmental variable');
+  throw new Error('Please add your Mongo URI to .env.local');
 }
 
-// check the MongoDB DB
-if (!MONGO_DB) {
-  throw new Error('Define the MONGODB_DB environmental variable');
-}
-
-let cachedClient = null;
-let cachedDb = null;
-
-export async function connectDB() {
-  // check the cached.
-  if (cachedClient && cachedDb) {
-    // load from cache
-    return {
-      client: cachedClient,
-      db: cachedDb,
-    };
+const options = {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+} as MongoClientOptions;
+let client;
+let clientPromise;
+if (process.env.NODE_ENV === 'development') {
+  // In development mode, use a global variable so that the value
+  // is preserved across module reloads caused by HMR (hot module replacement).
+  if (!global._mongoClientPromise) {
+    client = new MongoClient(MONGO_URI, options);
+    global._mongoClientPromise = client.connect();
   }
-
-  // set the connection options
-  const opts = {};
-
-  // Connect to cluster
-  let client = new MongoClient(MONGO_URI, opts);
-  await client.connect();
-  let db = client.db(MONGO_DB);
-
-  // set cache
-  cachedClient = client;
-  cachedDb = db;
-
-  return {
-    client: cachedClient,
-    db: cachedDb,
-  };
+  clientPromise = global._mongoClientPromise;
+} else {
+  // In production mode, it's best to not use a global variable.
+  client = new MongoClient(MONGO_URI, options);
+  clientPromise = client.connect();
 }
-export default connectDB;
+// Export a module-scoped MongoClient promise. By doing this in a
+// separate module, the client can be shared across functions.
+export default clientPromise;

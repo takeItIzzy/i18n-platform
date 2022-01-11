@@ -1,13 +1,14 @@
 import APIReturnMessage from 'services/APIReturnMessage';
-import connectDB from 'libs/mongodb';
 import bcrypt from 'bcryptjs';
+import clientPromise from 'libs/mongodb';
 
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const { db } = await connectDB();
-    const reply = await db.collection('user-info').findOne({ username });
+    const client = await clientPromise;
+    const db = client.db(process.env.MONGO_DB);
+    const reply = db.collection('user-info').findOne({ username });
     if (!!reply) {
       if (bcrypt.compareSync(password, reply.password)) {
         res.status(401).json(
@@ -28,20 +29,24 @@ const login = async (req, res) => {
       return;
     }
   } catch (e) {
-    res.status(500).json({
-      status: 'error',
-      code: 'e_10001',
-    });
+    res.status(500).json(
+      new APIReturnMessage({
+        status: 'error',
+        code: 'e_10001',
+      })
+    );
     return;
   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      // todo jwt token
-      token: 'token',
-    },
-  });
+  res.status(200).json(
+    new APIReturnMessage({
+      status: 'success',
+      data: {
+        // todo jwt token
+        token: 'token',
+      },
+    })
+  );
 };
 
 export default login;
