@@ -1,15 +1,14 @@
 import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGO_URI;
-const MONGODB_DB = process.env.MONGO_DB;
+const { MONGO_URI, MONGO_DB } = process.env;
 
 // check the MongoDB URI
-if (!MONGODB_URI) {
+if (!MONGO_URI) {
   throw new Error('Define the MONGODB_URI environmental variable');
 }
 
 // check the MongoDB DB
-if (!MONGODB_DB) {
+if (!MONGO_DB) {
   throw new Error('Define the MONGODB_DB environmental variable');
 }
 
@@ -30,9 +29,9 @@ export async function connectDB() {
   const opts = {};
 
   // Connect to cluster
-  let client = new MongoClient(MONGODB_URI, opts);
+  let client = new MongoClient(MONGO_URI, opts);
   await client.connect();
-  let db = client.db(MONGODB_DB);
+  let db = client.db(MONGO_DB);
 
   // set cache
   cachedClient = client;

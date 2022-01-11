@@ -1,7 +1,8 @@
 import Layout from 'components/Layout';
 import Form from 'components/Form';
 import * as React from 'react';
-import fetchLogin from '../services/login';
+import fetchAuth from 'services/auth';
+import StatusCode from 'constants/statusCode';
 
 const { Input } = Form;
 
@@ -16,8 +17,21 @@ const Login = () => {
           <Form
             onSubmit={async (data) => {
               setLoading(true);
-              await fetchLogin(data);
+              const res = await fetchAuth(data, 'login');
               setLoading(false);
+
+              if (res.status === 'success') {
+                console.log(res);
+              } else if (
+                res.code === 'e_10002' &&
+                confirm('username does not exist, will you create a new account?')
+              ) {
+                setLoading(true);
+                await fetchAuth(data, 'register');
+                setLoading(false);
+              } else {
+                alert(StatusCode[res.code]);
+              }
             }}
             loading={loading}
           >
