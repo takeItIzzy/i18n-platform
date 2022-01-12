@@ -8,16 +8,26 @@ const login = async (req, res) => {
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGO_DB);
-    const reply = db.collection('user-info').findOne({ username });
+    const reply = await db.collection('user-info').findOne({ username });
     if (!!reply) {
-      if (bcrypt.compareSync(password, reply.password)) {
+      const isPasswordMatch = await bcrypt.compare(password, reply.password);
+      if (isPasswordMatch) {
+        res.status(200).json(
+          new APIReturnMessage({
+            status: 'success',
+            data: {
+              // todo jwt token
+              token: 'token',
+            },
+          })
+        );
+      } else {
         res.status(401).json(
           new APIReturnMessage({
             status: 'error',
             code: 'e_10003',
           })
         );
-        return;
       }
     } else {
       res.status(401).json(
@@ -35,18 +45,7 @@ const login = async (req, res) => {
         code: 'e_10001',
       })
     );
-    return;
   }
-
-  res.status(200).json(
-    new APIReturnMessage({
-      status: 'success',
-      data: {
-        // todo jwt token
-        token: 'token',
-      },
-    })
-  );
 };
 
 export default login;
