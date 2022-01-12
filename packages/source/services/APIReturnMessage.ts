@@ -13,13 +13,17 @@ interface IError {
 }
 
 class APIReturnMessage<data> {
-  status: 'success' | 'error';
-  code?: keyof typeof StatusCode;
-  data?: data;
-  constructor({ status, code, data }: ISuccess<data> | IError) {
-    this.status = status;
-    this.code = code;
-    this.data = data;
+  success(data): ISuccess<data> {
+    return {
+      status: 'success',
+      data,
+    };
+  }
+  error(code: keyof typeof StatusCode): IError {
+    return {
+      status: 'error',
+      code,
+    };
   }
 }
 
