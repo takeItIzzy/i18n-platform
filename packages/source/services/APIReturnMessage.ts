@@ -14,6 +14,7 @@ interface IError {
   data?: never;
 }
 
+export type IAPIReturnMessage<data> = ISuccess<data> | IError;
 class APIReturnMessage<data> {
   success(data): ISuccess<data> {
     return {
@@ -28,7 +29,7 @@ class APIReturnMessage<data> {
       message: StatusCode[code],
     };
   }
-  checkSuccess(res: ISuccess<data> | IError) {
+  checkSuccess(res: IAPIReturnMessage<data>) {
     return res.status === 'success';
   }
 }

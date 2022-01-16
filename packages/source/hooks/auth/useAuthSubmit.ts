@@ -1,15 +1,30 @@
-import * as React from 'react';
-import fetchAuth from 'services/auth';
 import StatusCode from 'constants/statusCode';
 import APIReturnMessage from 'services/APIReturnMessage';
+import useFetch from 'services/fetcher';
 
+interface IAuthData {
+  email: string;
+  password: string;
+}
+interface IAuthRes {
+  token: string;
+}
 const useAuthSubmit = () => {
-  const [loading, setLoading] = React.useState(false);
+  const { loading: loginLoading, onFetch: onFetchLogin } = useFetch<IAuthData, IAuthRes>(
+    '/api/login',
+    {
+      method: 'POST',
+    }
+  );
+  const { loading: registerLoading, onFetch: onFetchRegister } = useFetch<IAuthData, IAuthRes>(
+    '/api/register',
+    {
+      method: 'POST',
+    }
+  );
 
-  const handleSubmit = async (data) => {
-    setLoading(true);
-    const res = await fetchAuth(data, 'login');
-    setLoading(false);
+  const handleSubmit: (data: IAuthData) => void = async (data) => {
+    const res = await onFetchLogin({ data });
 
     if (new APIReturnMessage().checkSuccess(res)) {
       sessionStorage.setItem('token', res.data.token);
@@ -17,16 +32,14 @@ const useAuthSubmit = () => {
       res.code === 'e_10002' &&
       confirm('username does not exist, will you create a new account?')
     ) {
-      setLoading(true);
-      await fetchAuth(data, 'register');
-      setLoading(false);
+      await onFetchRegister({ data });
     } else {
       alert(StatusCode[res.code]);
     }
   };
 
   return {
-    loading,
+    loading: loginLoading || registerLoading,
     handleSubmit,
   };
 };

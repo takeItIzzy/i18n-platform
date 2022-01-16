@@ -2,7 +2,7 @@ import * as React from 'react';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SWRConfig } from 'swr';
-import fetcher from 'services/fetcher';
+import { swrFetcher } from 'services/fetcher';
 import '../styles/global.css';
 
 const App: React.FC<AppProps> = (props) => {
@@ -16,7 +16,7 @@ const App: React.FC<AppProps> = (props) => {
 
       <SWRConfig
         value={{
-          fetcher,
+          fetcher: swrFetcher,
         }}
       >
         <Component {...pageProps} />
