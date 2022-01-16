@@ -30,7 +30,7 @@ const useAuthSubmit = () => {
       sessionStorage.setItem('token', res.data.token);
     } else if (
       res.code === 'e_10002' &&
-      confirm('username does not exist, will you create a new account?')
+      confirm('email does not exist, will you create a new account?')
     ) {
       await onFetchRegister({ data });
     } else {

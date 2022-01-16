@@ -4,20 +4,20 @@ import clientPromise from 'libs/mongodb';
 import createToken, { ILoginSuccessRes } from 'libs/auth';
 
 const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGO_DB);
-    const reply = await db.collection('user-info').findOne({ username });
+    const reply = await db.collection('user-info').findOne({ email });
     if (!!reply) {
       const isPasswordMatch = await bcrypt.compare(password, reply.password);
       if (isPasswordMatch) {
-        const token = await createToken(username);
+        const token = await createToken(email);
         res.status(200).json(
           new APIReturnMessage<ILoginSuccessRes>().success({
             token,
-            username: reply.username,
+            email: reply.email,
           })
         );
       } else {

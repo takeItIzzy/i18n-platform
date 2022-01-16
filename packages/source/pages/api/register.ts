@@ -8,27 +8,27 @@ const genEncryptPassword = async (password: string) => {
 };
 
 const register = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   try {
     const client = await clientPromise;
     const db = client.db(process.env.MONGO_DB);
-    const reply = await db.collection('user-info').findOne({ username });
+    const reply = await db.collection('user-info').findOne({ email });
     if (reply) {
       res.status(401).json(new APIReturnMessage().error('e_10004'));
       return;
     } else {
       const encryptPassword = await genEncryptPassword(password);
       await db.collection('user-info').insertOne({
-        username,
+        email,
         password: encryptPassword,
       });
       // auto login
-      const token = await createToken(username);
+      const token = await createToken(email);
       res.status(200).json(
         new APIReturnMessage<ILoginSuccessRes>().success({
           token,
-          username,
+          email,
         })
       );
       return;

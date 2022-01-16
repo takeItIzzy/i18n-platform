@@ -14,7 +14,7 @@ const Login = () => {
         <Layout.HeadBar />
         <Layout.Main>
           <Form onSubmit={handleSubmit} loading={loading}>
-            <Input name="username" className="mb-[24px]" label required />
+            <Input name="email" type="email" className="mb-[24px]" label required />
             <Input
               name="password"
               type="password"
